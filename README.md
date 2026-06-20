@@ -218,5 +218,5 @@ RESULT: PASS — sent -> delivered -> read verified.
 
 ---
 
-## What I'd add next (out of scope for 72h)
+
 Refresh-token rotation, an outbox pattern so cache invalidation is transactionally consistent with order commits, idempotency keys on `POST /orders`, structured request tracing, and a proper integration test suite (the scripts here are smoke/load checks).
