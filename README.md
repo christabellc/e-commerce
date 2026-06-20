@@ -2,9 +2,6 @@
 
 A simplified social-commerce backend built for the Buckets Tanzania take-home assignment. It covers authentication, product management, a social feed, real-time 1-to-1 chat, and oversell-safe order processing — plus the bonus Redis caching and rate limiting.
 
-The headline correctness claim (no overselling under concurrency) and the chat status lifecycle are both backed by **runnable tests against a live database**, not just prose. See [Verified behaviour](#verified-behaviour).
-
----
 
 ## Tech stack & why
 
@@ -18,7 +15,7 @@ The headline correctness claim (no overselling under concurrency) and the chat s
 | Real-time | Socket.IO | Rooms map cleanly to per-user delivery; reconnection handled for us. |
 | Cache / limits | Redis (`ioredis`) | Atomic counters for rate limiting; TTL cache for the product listing. |
 
-Redis is **optional**: if it is unavailable the API still runs — caching is skipped and rate limiting fails open (logged). This is a deliberate availability trade-off, documented inline in `src/config/redis.ts`.
+Redis is **optional**: if it is unavailable the API still runs — caching is skipped and rate limiting fails open (logged)
 
 ---
 
@@ -45,9 +42,6 @@ backend/
     ├── oversell-test.mjs     # 1,000 concurrent buyers vs the last unit
     └── chat-test.mjs         # sent -> delivered -> read over WebSocket
 ```
-
-The code is organised by **feature module**, each split into `schemas` (validation), `service` (business logic + DB), `controller` (HTTP glue), and `routes`. Business logic never touches `req`/`res`, so it is independently testable.
-
 ---
 
 ## Setup
