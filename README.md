@@ -165,13 +165,12 @@ The `stock >= $qty` guard plus the row lock acquired by `UPDATE` means concurren
 
 ---
 ## Scripts
-
- `npm run dev`
- `npm run build` / `npm start` 
- `npm run migrate` 
- `npm run seed`
- `npm run typecheck` 
----
-
+npm run dev
+npm run build
+npm run migrate
+npm run seed
+npm run typecheck
+node scripts/oversell-test.mjs
+node scripts/chat-test.mjs
 
 Refresh-token rotation, an outbox pattern so cache invalidation is transactionally consistent with order commits, idempotency keys on `POST /orders`, structured request tracing, and a proper integration test suite (the scripts here are smoke/load checks).
