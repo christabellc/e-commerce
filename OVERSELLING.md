@@ -25,3 +25,7 @@ WHERE id = $1 AND stock > 0;
 If the update affects one row, the stock is reserved and the order is created. If no rows are updated, the product is already out of stock, so the request is rejected.
 
 Since the database locks the row during the update, concurrent requests are processed safely. Only one request can purchase the last item, while the rest receive an "Out of Stock" response. This guarantees stock never becomes negative and prevents overselling.
+
+If the update affects one row, the stock is reserved and the order is created. If no rows are updated, the product is already out of stock, so the request is rejected.
+
+Since the database locks the row during the update, concurrent requests are processed safely. Only one request can purchase the last item, while the rest receive an "Out of Stock" response. This guarantees stock never becomes negative and prevents overselling.
