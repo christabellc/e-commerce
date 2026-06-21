@@ -15,8 +15,6 @@ A simplified social-commerce backend built for the Buckets Tanzania take-home as
 | Real-time | Socket.IO | Rooms map cleanly to per-user delivery; reconnection handled for us. |
 | Cache / limits | Redis (`ioredis`) | Atomic counters for rate limiting; TTL cache for the product listing. |
 
-Redis is **optional**: if it is unavailable the API still runs — caching is skipped and rate limiting fails open (logged)
-
 ---
 
 ## Project structure
@@ -147,11 +145,9 @@ TOKEN=$(curl -s localhost:4000/api/auth/login -H 'Content-Type: application/json
   -d '{"email":"zawadi@buckets.co.tz","password":"Password123!"}' | npx --yes node -e 'process.stdin.on("data",d=>console.log(JSON.parse(d).token))')
 curl -s localhost:4000/api/products | head
 ```
-
 ---
 
 ## Design decisions
-
 - **Layered modules.** `schemas → service → controller → routes`. Services contain all logic and DB access and are framework-agnostic, which keeps controllers thin and logic testable.
 - **Validation + coercion at the edge** with Zod; the middleware replaces the raw input with the parsed value, so handlers receive correctly typed data (e.g. numeric query params).
 - **One transaction helper** (`withTransaction`) owns BEGIN/COMMIT/ROLLBACK and client release, so business code can't leak connections.
@@ -169,47 +165,15 @@ WHERE id = $id AND stock >= $qty;   -- 0 rows affected => reject (insufficient s
 The `stock >= $qty` guard plus the row lock acquired by `UPDATE` means concurrent buyers for the last unit are serialised and only one can win. A `CHECK (stock >= 0)` constraint is a hard database-level backstop. Multi-item orders lock products in a deterministic (sorted) order to avoid deadlocks.
 
 ---
-
-## Bonus features
-
-- **Redis caching** of `GET /products` (TTL configurable; invalidated on product create and after stock changes from orders).
-- **Rate limiting** on `POST /auth/login` (per IP+email) and `POST /orders` (per user), via atomic Redis counters with a fixed window; emits `X-RateLimit-*` and `Retry-After` headers.
-
----
-
-## Verified behaviour
-
-Both claims below were checked against a live PostgreSQL instance (scripts included so you can re-run them):
-
-**1. No overselling under load** — `node scripts/oversell-test.mjs`
-```
-Concurrent attempts : 1000
-Succeeded (201)     : 1
-Rejected  (409)     : 999
-Final stock in DB   : 0
-RESULT: PASS — exactly one buyer won, no overselling.
-```
-
-**2. Chat status lifecycle** — `node scripts/chat-test.mjs`
-```
-send ack ok: true | initial status: sent
-Statuses Alice received: delivered -> read
-RESULT: PASS — sent -> delivered -> read verified.
-```
-(Both scripts assume the server is running and the DB is migrated + seeded. `scripts/chat-test.mjs` needs `socket.io-client`: `npm i -D socket.io-client`.)
-
----
-
 ## Scripts
 
 | Command | Action |
 |---|---|
-| `npm run dev` | Run with hot reload |
-| `npm run build` / `npm start` | Compile to `dist/` and run |
-| `npm run migrate` | Apply the schema |
-| `npm run seed` | Insert sample users + products |
-| `npm run typecheck` | Type-check without emitting |
-
+| `npm run dev`
+| `npm run build` / `npm start` 
+| `npm run migrate` 
+| `npm run seed`
+| `npm run typecheck` 
 ---
 
 
