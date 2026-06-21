@@ -63,19 +63,18 @@ docker compose up -d        # starts postgres on :5432, redis on :6379
 
 ### 4. Create the schema and seed sample data
 ```bash
-npm run migrate            # applies src/db/schema.sql (idempotent)
-npm run seed               # 2 users + 3 products (one with stock = 1)
+npm run migrate           
+npm run seed              
 ```
 Seeded logins (password `Password123!`): `amani@buckets.co.tz` (seller), `zawadi@buckets.co.tz` (buyer).
 
 ### 5. Run
 ```bash
-npm run dev                # hot-reload (tsx)
+npm run dev                
 # or
-npm run build && npm start # compiled
+npm run build && npm start 
 ```
 Server: `http://localhost:4000` — health check at `GET /health`.
-
 ---
 
 ## Environment variables
@@ -167,13 +166,11 @@ The `stock >= $qty` guard plus the row lock acquired by `UPDATE` means concurren
 ---
 ## Scripts
 
-| Command | Action |
-|---|---|
-| `npm run dev`
-| `npm run build` / `npm start` 
-| `npm run migrate` 
-| `npm run seed`
-| `npm run typecheck` 
+ `npm run dev`
+ `npm run build` / `npm start` 
+ `npm run migrate` 
+ `npm run seed`
+ `npm run typecheck` 
 ---
 
 
